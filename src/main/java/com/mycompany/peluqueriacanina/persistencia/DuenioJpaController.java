@@ -132,4 +132,9 @@ public class DuenioJpaController implements Serializable {
             em.close();
         }
     }
+
+    Duenio findIdDuenio(int idDuenio) {
+ 
+     return findDuenio(idDuenio); 
+    }
 }

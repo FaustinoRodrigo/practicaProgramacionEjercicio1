@@ -7,6 +7,8 @@ package com.mycompany.peluqueriacanina.igu;
 import com.mycompany.peluqueriacanina.logica.Controladora;
 import com.mycompany.peluqueriacanina.logica.Mascota;
 import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -75,8 +77,10 @@ public class VerDatos extends javax.swing.JFrame {
         jLabel2.setText("Datos de mascotas");
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(this::btnEditarActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -158,6 +162,74 @@ public class VerDatos extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowOpened
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+       
+        //Controlo que la tabla no este vacia
+        if(tablaMascotas.getRowCount() > 0){
+        
+            //controlo que al menos un registro este seleccionado
+            if(tablaMascotas.getSelectedRow() != -1){
+              
+                //obtengo la id de la mascota a eliminar
+               int numCliente = Integer.parseInt(String.valueOf(tablaMascotas.getValueAt(tablaMascotas.getSelectedRow(),0)));
+               //llamo al metodo borrar
+               control.borrarMascota(numCliente);
+               
+               //informo al usuario que borro correctamente
+               mostrarMensaje("Mascota eliminada correctamente", "Info", "Borrado de mascota");
+               cargarTabla();
+               
+            }else{
+               mostrarMensaje("No selecciono ninguna mascota", "Error", "Error al eliminar");
+            }
+        }else{
+               mostrarMensaje("No hay nada para eliminar en la tabla", "Error", "Error al eliminar");
+
+        }
+        
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+        //Controlo que la tabla no este vacia
+        if(tablaMascotas.getRowCount() > 0){
+        
+            //controlo que al menos un registro este seleccionado
+            if(tablaMascotas.getSelectedRow() != -1){
+                //obtengo la id de la mascota a editar
+                int numCliente = Integer.parseInt(String.valueOf(tablaMascotas.getValueAt(tablaMascotas.getSelectedRow(),0)));
+                
+                ModificarDatos pantallaModif = new ModificarDatos(numCliente);
+                pantallaModif.setVisible(true);
+                pantallaModif.setLocationRelativeTo(null);
+                
+                          this.dispose();
+
+            }
+            else{
+               mostrarMensaje("No selecciono ninguna mascota", "Error", "Error al eliminar");
+            }
+            
+            }else{
+               mostrarMensaje("No hay nada para eliminar en la tabla", "Error", "Error al eliminar");
+
+        }
+
+    }//GEN-LAST:event_btnEditarActionPerformed
+ 
+    public void mostrarMensaje(String mensaje, String tipo, String titulo){
+    
+    JOptionPane optionPane = new JOptionPane(mensaje);
+    if(tipo.equals("Info")){
+               optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+    }else if(tipo.equals("Error")){
+             optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+    }
+               JDialog dialog = optionPane.createDialog(titulo);
+               dialog.setAlwaysOnTop(true);
+               dialog.setVisible(true);
+    
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -171,7 +243,7 @@ public class VerDatos extends javax.swing.JFrame {
     private javax.swing.JTable tablaMascotas;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarTabla() {
+    public void cargarTabla() {
 //Definicion del modelo de tabla
        
      DefaultTableModel modeloTabla = new DefaultTableModel(){
@@ -193,7 +265,7 @@ public class VerDatos extends javax.swing.JFrame {
      
          for(Mascota masco: listaMascotas){
          
-           Object[] objeto = {masco.getNumCliente(),masco.getNombre(), masco.getColor(), masco.getAlergico(), masco.getAtencionEspecial(), 
+           Object[] objeto = {masco.getNumCliente(),masco.getNombre(), masco.getColor(), masco.getRaza(), masco.getAlergico(), masco.getAtencionEspecial(), 
            masco.getUnDuenio().getNombre(), masco.getUnDuenio().getCelDuenio()}; 
            
            modeloTabla.addRow(objeto);
